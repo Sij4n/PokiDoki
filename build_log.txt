@@ -1,0 +1,10 @@
+﻿
+> my-react-app@0.1.0 build
+> react-scripts build
+
+Creating an optimized production build...
+Failed to compile.
+
+Module not found: Error: Can't resolve './logo.svg' in 'C:\Users\Asus\Desktop\L\my-react-app\src'
+
+
