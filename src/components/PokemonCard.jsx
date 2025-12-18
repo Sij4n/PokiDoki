@@ -2,8 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const PokemonCard = ({ pokemon, onClick }) => {
-  const typeMain = pokemon.types[0].type.name;
-
   return (
     <motion.div
       layoutId={`card-${pokemon.id}`}
