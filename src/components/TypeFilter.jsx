@@ -18,8 +18,9 @@ const TypeFilter = ({ selectedType, setSelectedType }) => {
                 gap: '0.8rem',
                 overflowX: 'auto',
                 padding: '1rem 0.5rem',
-                marginBottom: '2rem',
                 maxWidth: '100%',
+                flex: '1',
+                minWidth: '300px',
                 scrollbarWidth: 'none', /* Firefox */
                 msOverflowStyle: 'none',  /* IE 10+ */
             }}

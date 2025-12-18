@@ -1,11 +1,20 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const PokemonCard = ({ pokemon, onClick }) => {
+const PokemonCard = ({ pokemon, onClick, onCompare, isSelected, comparisonMode }) => {
+  const handleClick = (e) => {
+    if (comparisonMode && onCompare) {
+      e.stopPropagation();
+      onCompare(pokemon);
+    } else if (onClick) {
+      onClick(pokemon);
+    }
+  };
+
   return (
     <motion.div
       layoutId={`card-${pokemon.id}`}
-      onClick={() => onClick(pokemon)}
+      onClick={handleClick}
       className="glass-panel"
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -25,9 +34,32 @@ const PokemonCard = ({ pokemon, onClick }) => {
         alignItems: 'center',
         position: 'relative',
         overflow: 'hidden',
-        background: `linear-gradient(135deg, var(--glass-bg), rgba(255,255,255,0.05))`,
+        background: isSelected 
+          ? `linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.1))`
+          : `linear-gradient(135deg, var(--glass-bg), rgba(255,255,255,0.05))`,
+        border: isSelected ? '2px solid #4caf50' : '1px solid rgba(255, 255, 255, 0.2)',
+        boxShadow: isSelected ? '0 0 20px rgba(76, 175, 80, 0.5)' : 'none',
       }}
     >
+      {comparisonMode && (
+        <div style={{
+          position: 'absolute',
+          top: '0.5rem',
+          right: '0.5rem',
+          width: '24px',
+          height: '24px',
+          borderRadius: '50%',
+          background: isSelected ? '#4caf50' : 'rgba(255, 255, 255, 0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          zIndex: 10
+        }}>
+          {isSelected ? '✓' : '+'}
+        </div>
+      )}
       <div
         style={{
           position: 'absolute',

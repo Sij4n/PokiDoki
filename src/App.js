@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import PokemonList from './components/PokemonList';
 import PokemonModal from './components/PokemonModal';
-import SearchBar from './components/SearchBar';
-import TypeFilter from './components/TypeFilter';
-import AnimatedText from './animations/AnimatedText';
-import FadeIn from './animations/FadeIn';
+import PokemonComparison from './components/PokemonComparison';
+import NavigationBar from './components/NavigationBar';
 
 function App() {
   const [allPokemon, setAllPokemon] = useState([]);
@@ -13,6 +11,8 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('all');
   const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [comparisonMode, setComparisonMode] = useState(false);
+  const [comparedPokemons, setComparedPokemons] = useState([]);
 
   useEffect(() => {
     const fetchPokemon = async () => {
@@ -46,37 +46,36 @@ function App() {
 
   return (
     <div className="App">
-      <header style={{ marginBottom: '3rem', paddingTop: '2rem' }}>
-        <FadeIn>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: '1rem',
-            marginBottom: '1rem'
-          }}>
-            <img
-              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
-              alt="Pokeball"
-              style={{ width: '40px', height: '40px' }}
-            />
-            <AnimatedText text="Pokedex" className="logo-text" />
-          </div>
-
-          <p style={{ opacity: 0.7 }}>A React Bits Inspired Collection</p>
-        </FadeIn>
-      </header>
+      <NavigationBar 
+        searchQuery={searchQuery} 
+        setSearchQuery={setSearchQuery}
+        selectedType={selectedType}
+        setSelectedType={setSelectedType}
+        comparisonMode={comparisonMode}
+        setComparisonMode={setComparisonMode}
+        comparedPokemons={comparedPokemons}
+        setComparedPokemons={setComparedPokemons}
+      />
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-          <TypeFilter selectedType={selectedType} setSelectedType={setSelectedType} />
-        </div>
-
         {loading ? (
           <div style={{ color: 'white', marginTop: '50px' }}>Loading Amazing Pokemon...</div>
         ) : (
-          <PokemonList pokemon={filteredPokemon} onPokemonClick={setSelectedPokemon} />
+          <PokemonList 
+            pokemon={filteredPokemon} 
+            onPokemonClick={setSelectedPokemon}
+            comparisonMode={comparisonMode}
+            onCompare={(pokemon) => {
+              if (comparedPokemons.find(p => p.id === pokemon.id)) {
+                setComparedPokemons(comparedPokemons.filter(p => p.id !== pokemon.id));
+              } else if (comparedPokemons.length < 6) {
+                setComparedPokemons([...comparedPokemons, pokemon]);
+              } else {
+                alert('You can compare up to 6 Pokemons at once!');
+              }
+            }}
+            comparedPokemons={comparedPokemons}
+          />
         )}
       </div>
 
@@ -84,6 +83,17 @@ function App() {
         selectedPokemon={selectedPokemon}
         onClose={() => setSelectedPokemon(null)}
       />
+
+      {comparisonMode && (
+        <PokemonComparison
+          comparedPokemons={comparedPokemons}
+          onRemove={(id) => setComparedPokemons(comparedPokemons.filter(p => p.id !== id))}
+          onClose={() => {
+            setComparisonMode(false);
+            setComparedPokemons([]);
+          }}
+        />
+      )}
     </div>
   );
 }

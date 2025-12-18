@@ -3,7 +3,7 @@ import PokemonCard from './PokemonCard';
 import { motion } from 'framer-motion';
 import FadeIn from '../animations/FadeIn';
 
-const PokemonList = ({ pokemon, onPokemonClick }) => {
+const PokemonList = ({ pokemon, onPokemonClick, comparisonMode, onCompare, comparedPokemons }) => {
   const [limit, setLimit] = useState(20);
   const displayedPokemon = pokemon.slice(0, limit);
 
@@ -20,7 +20,13 @@ const PokemonList = ({ pokemon, onPokemonClick }) => {
       >
         {displayedPokemon.map((poke, index) => (
           <FadeIn key={poke.id} delay={index * 0.05} duration={0.3}>
-            <PokemonCard pokemon={poke} onClick={onPokemonClick} />
+            <PokemonCard 
+              pokemon={poke} 
+              onClick={onPokemonClick}
+              onCompare={onCompare}
+              isSelected={comparedPokemons?.some(p => p.id === poke.id)}
+              comparisonMode={comparisonMode}
+            />
           </FadeIn>
         ))}
       </motion.div>
